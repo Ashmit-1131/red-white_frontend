@@ -2,7 +2,7 @@ import {legacy_createStore,combineReducers,compose,applyMiddleware} from 'redux'
 
 import thunk from 'redux-thunk'
 import {reducer as authReducer}  from './auth.redux/authReducer';
-
+import { PostReducer } from './blog.redux/blogReducer';
 
 
 
@@ -10,6 +10,7 @@ import {reducer as authReducer}  from './auth.redux/authReducer';
 const rootReducer = combineReducers({
 
    authReducer,
+   PostReducer
  
  
 });

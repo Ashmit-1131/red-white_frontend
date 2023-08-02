@@ -2,7 +2,9 @@
 import './App.css';
 
 import Navbar from './Component/Navbar';
+import Post from './Pages/Post';
 import AllRoute from './Routes/AllRoutes';
+
 
 
 
@@ -13,6 +15,7 @@ function App() {
 
       <Navbar/>
       <AllRoute/>
+    
       
     </div>
   );
