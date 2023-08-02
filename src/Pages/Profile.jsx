@@ -15,7 +15,8 @@ import {
   import { useEffect, useState } from 'react';
   import { useDispatch, useSelector } from 'react-redux';
   import { useNavigate } from 'react-router-dom'; // Import useNavigate
-//   import OrderLayout from './OrderLayout';
+import BlogLayout from './bloglayout';
+import { BASE_URL1 } from '../Component/constants/config';
  
   import { AUTO, BLUE, BLUEVIOLET, CENTER, COLUMN, FILL_30PARENT, FILL_70PARENT, FILL_90PARENT, FILL_PARENT, LARGE, ORANGE, RELATIVE, ROW, START, STICKY, TOP, X2LARGE, YELLOW } from '../Component/constants/typography';
   import { LOGOUT } from '../Redux/auth.redux/authTypes';
@@ -36,35 +37,36 @@ import {
       window.scrollTo(0, 0);
     }, [page]);
   
-    // useEffect(() => {
+    useEffect(() => {
   
-    //   const getData = async () => {
-    //     setLoading(true)
-    //     let res = await axios({
-    //       method: "get",
-    //       url: BASE_URL1 + "/order?page=" + page,
-    //       headers: {
-    //         Authorization: token
-    //       }
-    //     })
+      const getData = async () => {
+        setLoading(true)
+        let res = await axios({
+          method: "get",
+          url: BASE_URL1 + "/blog?page=" + page,
+          headers: {
+            Authorization: token
+          }
+        })
   
-    //     if (res.data.status == 1) {
+        if (res.data.status == 1) {
   
-    //       setOrder(res.data.data)
-    //       setTotalPage(res.data.count)
+          setOrder(res.data.data)
+          console.log(res.data.data)
+          setTotalPage(res.data.count)
   
-    //       setLoading(false)
+          setLoading(false)
   
   
-    //     } else {
+        } else {
   
-    //       setLoading(false)
-    //     }
-    //   }
+          setLoading(false)
+        }
+      }
   
-    //   getData()
+      getData()
   
-    // }, [page])
+    }, [page])
   
     if (loading) return <Loading />
   
@@ -115,16 +117,16 @@ import {
           </Stack>
         </Stack>
   
-        {/* <VStack borderRadius="lg"
+        <VStack borderRadius="lg"
           alignItems={START} p={4} borderWidth="1px"
           w={{ base: FILL_PARENT, sm: FILL_PARENT, md: FILL_PARENT, lg: FILL_70PARENT }} mt={{ base: 180, sm: 180, md: 180, lg: 0 }} mb={40}>
-          <Badge mb={8} fontSize={X2LARGE} colorScheme={YELLOW}>Your Orders</Badge>
+          <Badge mb={8} fontSize={X2LARGE} colorScheme={YELLOW}>Your Blogs</Badge>
   
-          {order?.map((el) => <OrderLayout key={el._id} {...el} />)}
+          {order?.map((el) => <BlogLayout key={el._id} {...el} />)}
   
-          <Paginantion page={page} totalPage={totalPage} divide={5} setPage={setPage} />
+         
   
-        </VStack> */}
+        </VStack>
       </Flex>
     );
   }

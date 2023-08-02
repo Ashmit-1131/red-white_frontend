@@ -13,7 +13,7 @@ function BlogsPage() {
     delete cartItem[0]["_id"] //delete previous id
     let res =await axios({
       method :"post",
-      url:BASE_URL1+`/cart/add`,
+      url:BASE_URL1+`/blog/add`,
       data:cartItem,
       headers:{
         Authorization:token
