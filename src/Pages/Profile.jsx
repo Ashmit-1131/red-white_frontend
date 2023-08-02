@@ -43,7 +43,7 @@ import { BASE_URL1 } from '../Component/constants/config';
         setLoading(true)
         let res = await axios({
           method: "get",
-          url: BASE_URL1 + "/blog?page=" + page,
+          url: BASE_URL1 + "/blog/user?page=" + page,
           headers: {
             Authorization: token
           }

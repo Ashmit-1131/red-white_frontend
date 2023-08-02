@@ -2,6 +2,7 @@ import React from 'react';
 import { ChakraProvider, CSSReset, Box, Flex, Spacer, Link, Button, IconButton, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 import { ChevronDownIcon, HamburgerIcon } from '@chakra-ui/icons';
 
+
 function Navbar() {
   return (
    

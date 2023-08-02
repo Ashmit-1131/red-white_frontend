@@ -16,17 +16,39 @@ import {
   Heading,
   Text,
   useToast,
+  Flex
 } from '@chakra-ui/react';
+import {
+    ABSOLUTE,
+    AUTO,
+    BLACK,
+    CENTER,
+    COLUMN,
+    FILL_55PARENT,
+    FILL_90PARENT,
+    FILL_PARENT,
+    POINTER,
+    RELATIVE,
+    SB,
+    SE,
+    SOLID,
+    START,
+    TRANSPARENT,
+    WHITE,
+  } from "../Component/constants/typography";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; // Assuming you're using React Router for navigation
 import { BASE_URL1 } from '../Component/constants/config';
-
+import SearchItem from './Search';
 function Post() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
+  const [search, setSearch] = useState("");
+  const [searchData, setSearchData] = useState([]);
+  const [display, setDisplay] = useState(false);
 
   const { token, name, email, phone } = useSelector((state) => state.authReducer)
 console.log(token,name,email,phone)
@@ -124,8 +146,82 @@ console.log(token,name,email,phone)
       });
   }, []);
 
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      setDisplay(false)
+      setSearchData([])
+      nav(`/search?q=${search}`);
+    }
+  };
+
+  useEffect(() => {
+    if (search === "") {
+      setDisplay(false)
+      setSearchData([])
+    }
+    let getRecomandation = async () => {
+      let res = await axios({
+        method: "get",
+        url: BASE_URL1 + `/search?q=${search}&page=${0}`,
+      });
+
+      if (res.data.status === 1) {
+        setSearchData(res.data.data);
+      } else {
+      }
+    };
+    const timeoutId = setTimeout(() => {
+      if (search !== "") {
+        getRecomandation();
+      }
+    }, 200);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [search]);
+
+  const handleClick = (text) => {
+    setSelectedText(text);
+  };
   return (
     <div>
+        <VStack
+  position="relative"
+  w="50%"
+  border="1px solid"
+  mx="auto" // Added to center the VStack horizontally
+  textAlign="center" // Center the content inside VStack
+>
+  <Input
+    variant="unstyled"
+    onKeyDown={handleKeyDown}
+    placeholder="search for Blogs!"
+    value={search}
+    onChange={(e) => {
+      setSearch(e.target.value);
+      setDisplay(true);
+    }}
+  />
+  <Flex
+    overflowY="scroll"
+    direction="column"
+    justifyContent="center"
+    bg="black"
+    zIndex={500}
+    display={display ? "block" : "none"}
+    position="absolute"
+    top={10}
+    w="100%"
+    borderRadius={8}
+    maxH={500}
+  >
+    {searchData?.map((el) => (
+      <SearchItem key={el._id} setDisplay={setDisplay} {...el} />
+    ))}
+  </Flex>
+</VStack>
+
       <Container maxW="container.lg" py={8}>
         <Button colorScheme="blue" onClick={openModal}>
           Create New Post

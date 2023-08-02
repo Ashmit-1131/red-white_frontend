@@ -5,7 +5,7 @@ import Home from '../Component/Home'
 
 import Registration from '../Pages/Signup'
 import Login from '../Pages/Login'
-import BlogsPage from '../Pages/blogs'
+import PrivateRoute from './PrivateRoute'
 import Post from '../Pages/Post'
 import Profile from '../Pages/Profile'
 
@@ -18,7 +18,7 @@ const AllRoute = () => {
         <Route path='/signup' element={<Registration />} />
         <Route path='/login' element={<Login />} />
         
-        {/* <Route path='/blogs' element={<BlogsPage/>} /> */}
+       
         <Route path='/blogs' element={<Post/>} />
         <Route path='/profile' element={<Profile/>} />
     </Routes>
