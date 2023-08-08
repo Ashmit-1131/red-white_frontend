@@ -2,7 +2,7 @@ import { Badge, Flex, HStack, Image, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { AUTO, CENTER, GAINSBORO, GRAY, ORANGE, POINTER, SB } from "../Component/constants/typography"
 
- function SearchItem({image,title,description,_id}){
+ function SearchItem({image,title,description,_id,setDisplay}){
 
     const nav = useNavigate()
 

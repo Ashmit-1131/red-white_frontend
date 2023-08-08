@@ -76,6 +76,7 @@ import { BASE_URL1 } from '../Component/constants/config';
       sessionStorage.removeItem("name");
       sessionStorage.removeItem("email");
       sessionStorage.removeItem("phone");
+      localStorage.removeItem('auth')
       dispatch({ type: LOGOUT });
       navigate("/"); // Redirect to the home page
     }

@@ -1,27 +1,16 @@
-import React from 'react';
-import { Route, useNavigate } from 'react-router-dom';
+import React from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  const token = sessionStorage.getItem('token');
-  const isAuthenticated = token !== null;
-  const navigate = useNavigate();
+const PrivateRoute = ({ children }) => {
+    //const isAuth = useSelector((store) => store.AuthReducer.isAuth)
+    const [isAuth, setisAuth] = React.useState(localStorage.getItem('auth')?true:false)
+    
+    const location = useLocation();
 
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        isAuthenticated ? (
-          <Component {...props} />
-        ) : (
-          // Correct way to use navigate
-          // Use an empty JSX element as a wrapper, or use parentheses
-          <>
-            {navigate('/login')}
-          </>
-        )
-      }
-    />
-  );
-};
+    if (!isAuth) {
+        return <Navigate to={'/login'} state={location.pathname} replace />;   
+    }
+    return children
+}
 
-export default PrivateRoute;
+export default PrivateRoute

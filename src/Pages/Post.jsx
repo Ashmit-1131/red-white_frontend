@@ -12,42 +12,31 @@ import {
   Input,
   Textarea,
   Image,
-  Box,
+  SimpleGrid,Stack,HStack,
   Heading,
   Text,
   useToast,
-  Flex
+  Flex,
+  Select
 } from '@chakra-ui/react';
-import {
-    ABSOLUTE,
-    AUTO,
-    BLACK,
-    CENTER,
-    COLUMN,
-    FILL_55PARENT,
-    FILL_90PARENT,
-    FILL_PARENT,
-    POINTER,
-    RELATIVE,
-    SB,
-    SE,
-    SOLID,
-    START,
-    TRANSPARENT,
-    WHITE,
-  } from "../Component/constants/typography";
+import axios from 'axios';
+
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Assuming you're using React Router for navigation
+import { useNavigate ,Link} from 'react-router-dom'; // Assuming you're using React Router for navigation
 import { BASE_URL1 } from '../Component/constants/config';
 import SearchItem from './Search';
+import Loading from "../Component/Loading/Loading"
 function Post() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
+  const [selectedText,setSelectedText]=useState("")
   const [search, setSearch] = useState("");
   const [searchData, setSearchData] = useState([]);
+  const [genre, setGenre] = useState('')
+  const [loading, setLoading] = useState(false)
   const [display, setDisplay] = useState(false);
 
   const { token, name, email, phone } = useSelector((state) => state.authReducer)
@@ -64,7 +53,7 @@ console.log(token,name,email,phone)
   };
 
   const handleSubmit = () => {
-    if (!title || !image || !description) {
+    if (!title || !image || !description||!genre) {
       toast({
         title: 'Incomplete Data',
         description: 'Please fill in all fields.',
@@ -79,8 +68,9 @@ console.log(token,name,email,phone)
       title,
       image,
       description,
+      genre
     };
-
+   setLoading(true)
     fetch(`${BASE_URL1}/blog/add`, {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -89,17 +79,17 @@ console.log(token,name,email,phone)
         Authorization: ` ${token}`,
       },
     })
-      .then((res) => res.json())
+      .then((res) =>res.json())
       .then((res) => {
         if (res.status === 1) {
-          toast({
+         toast({
             title: 'Blog created.',
             description: res.message,
             status: 'success',
             duration: 3000,
             isClosable: true,
           });
-          setPosts([...posts, res.data]); // Assuming the response structure includes "data"
+          setPosts([...posts, payload]);
           closeModal();
         } else {
           toast({
@@ -109,6 +99,7 @@ console.log(token,name,email,phone)
             duration: 3000,
             isClosable: true,
           });
+          setLoading(false)
         }
       })
       .catch((err) => {
@@ -121,20 +112,17 @@ console.log(token,name,email,phone)
           isClosable: true,
         });
       });
+      setLoading(false)
   };
-
+ 
   useEffect(() => {
-    // Fetch existing posts and set the state
-    fetch(`${BASE_URL1}/blog`,
-    {method: 'GET',
-  
-    headers: {
-      'Content-type': 'application/json',
-      Authorization: ` ${token}`,
-    }}
-    ,
-    ) // Assuming this endpoint fetches existing posts
-    
+    fetch(`${BASE_URL1}/blog`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: ` ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((res) => {
         if (res.status === 1) {
@@ -145,12 +133,13 @@ console.log(token,name,email,phone)
         console.error('Error fetching posts:', err);
       });
   }, []);
+  
 
   const handleKeyDown = (event) => {
     if (event.keyCode === 13) {
       setDisplay(false)
       setSearchData([])
-      nav(`/search?q=${search}`);
+      navigate(`/search?q=${search}`);
     }
   };
 
@@ -184,6 +173,8 @@ console.log(token,name,email,phone)
   const handleClick = (text) => {
     setSelectedText(text);
   };
+
+  if (loading) return <Loading />
   return (
     <div>
         <VStack
@@ -217,7 +208,9 @@ console.log(token,name,email,phone)
     maxH={500}
   >
     {searchData?.map((el) => (
+      <Link to={`/blogs/${el._id}`}>
       <SearchItem key={el._id} setDisplay={setDisplay} {...el} />
+      </Link>
     ))}
   </Flex>
 </VStack>
@@ -227,14 +220,49 @@ console.log(token,name,email,phone)
           Create New Post
         </Button>
         <VStack spacing={4} align="stretch">
-          {posts.map((post, index) => (
-            <Box key={index} p={4} borderWidth="1px" borderRadius="md">
-                   <Heading size="md">{post.title}</Heading>
-              <Image src={post.image} alt={post.title} />
-           
-              <Text>{post.description}</Text>
-            </Box>
-          ))}
+        <SimpleGrid
+          
+          >
+            {posts.map((el) => (
+              <Link to={`/blogs/${el._id}`}>
+              <Stack
+                key={el._id}
+                textAlign="left"
+                boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
+                transition={"transform 2s"}
+                _hover={{ transform: "scale(1.1)", border: "2px dotted black" }}
+              >
+                <Link to={`/blogs/${el._id}`}>
+                  <Image src={el.image} />
+                </Link>
+
+                <Stack p={5}>
+                  <Heading>
+                    {el.title}
+                  </Heading>
+
+                  <Text fontSize={"30px"} fontWeight="bold">
+                    {" "}
+                     {el.genre}
+                  </Text>
+
+                  <Text fontSize={"20px"} fontWeight="bold">
+                    {" "}
+                     {el.description}
+                  </Text>
+                  <HStack
+                    display={"flex"}
+                    justifyContent="center"
+                    gap={3}
+                    m="auto"
+                  >
+                  
+                  </HStack>
+                </Stack>
+              </Stack>
+              </Link>
+            ))}
+          </SimpleGrid>
         </VStack>
       </Container>
       <Modal isOpen={modalIsOpen} onClose={closeModal}>
@@ -242,23 +270,34 @@ console.log(token,name,email,phone)
         <ModalContent>
           <ModalHeader>Create a New Post</ModalHeader>
           <ModalBody>
-            <VStack spacing={4}>
-              <Input
-                placeholder="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <Input
-                placeholder="Image URL"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-              />
-              <Textarea
-                placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </VStack>
+          <VStack spacing={4}>
+    <Input
+        placeholder="Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+    />
+         <label>Genre:</label>
+                <Select value={genre} onChange={(e) => setGenre(e.target.value)}>
+                    <option value="">Select an option</option>
+                    <option value="Food">Food blogs</option>
+                    <option value="Travel">Travel blogs</option>
+                    <option value="Health">Health and fitness blogs</option>
+                    <option value="Lifestyle">Lifestyle blogs</option>
+                </Select>
+    <Input
+        placeholder="Image URL"
+        value={image}
+        onChange={(e) => setImage(e.target.value)}
+    />
+    <Textarea
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+    />
+    
+   
+</VStack>
+
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleSubmit}>

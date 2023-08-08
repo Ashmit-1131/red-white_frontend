@@ -1,19 +1,9 @@
+import React from "react";
 import { Grid } from "@chakra-ui/react";
 import { ABSOLUTE, CENTER, FILL_PARENT, FIXED, WHITE } from "../constants/typography";
-import Lottie from "react-lottie";
+import "./Loading.css"; // Import the CSS file for loading animation styles
 
 export default function Loading() {
-  function config(url) {
-    return {
-      loop: true,
-      autoplay: true,
-      path: url,
-      rendererSettings: {
-        preserveAspectRatio: "xMidYMid slice",
-      },
-    };
-  }
-
   return (
     <Grid
       placeItems={CENTER}
@@ -21,13 +11,13 @@ export default function Loading() {
       w={FILL_PARENT}
       h={"100vh"}
     >
-      <Lottie
-        options={config(
-          "https://assets3.lottiefiles.com/packages/lf20_kxsd2ytq.json"
-        )}
-        height={300}
-        width={300}
-      />
+      <div className="loading-container">
+        <div className="circle"></div>
+        <div className="dot dot1"></div>
+        <div className="dot dot2"></div>
+        <div className="dot dot3"></div>
+        <div className="dot dot4"></div>
+      </div>
     </Grid>
   );
 }

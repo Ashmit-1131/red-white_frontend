@@ -64,6 +64,8 @@ const Login = () => {
               duration: 9000,
               isClosable: true,
             });
+
+            status==1?localStorage.setItem('auth',true):localStorage.setItem('auth',false)
       }
 
       if (status == 1) {
